@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
+
+## @package line_follower
+#  This script enables a robot to follow a line using ROS (Robot Operating System) and OpenCV for image processing.
+#  It subscribes to a camera feed, processes images to detect a line, and controls the robot's motion to follow the line.
+
 import cv2
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
 
+## Global CvBridge object for converting ROS image messages to OpenCV format.
 bridge = CvBridge()
 
+## Callback function for processing incoming camera feed.
+#  @param image_data The image data from the camera feed.
+#
+#  This function converts the ROS image message to OpenCV format, processes the image to detect a line,
+#  calculates the deviation of the robot from the line, and publishes velocity commands to follow the line.
 def image_callback(image_data):
     try:
         cv_image = bridge.imgmsg_to_cv2(image_data, "bgr8")
@@ -65,7 +76,10 @@ def image_callback(image_data):
     cv2.imshow("Processed View", resized_image)
     cv2.waitKey(1)
 
-
+## Main function to initialize the ROS node and set up publishers and subscribers.
+#  
+#  Initializes the ROS node, sets up a publisher for velocity commands, and subscribes to the camera feed.
+#  The function then enters a loop (via rospy.spin()) to keep the node running.
 def main():
     rospy.init_node('line_follower')
 
